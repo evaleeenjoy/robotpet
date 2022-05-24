@@ -1,28 +1,3 @@
-function 舞蹈動作2 () {
-    for (let index = 0; index < 4; index++) {
-        basic.showIcon(IconNames.Heart)
-        robotbit.MotorRunDual(
-        robotbit.Motors.M1A,
-        150,
-        robotbit.Motors.M1B,
-        -150
-        )
-        basic.pause(200)
-        basic.showIcon(IconNames.SmallHeart)
-        robotbit.MotorRunDual(
-        robotbit.Motors.M1A,
-        -150,
-        robotbit.Motors.M1B,
-        150
-        )
-        basic.pause(200)
-    }
-    robotbit.GeekServo(robotbit.Servos.S1, 90)
-    basic.pause(500)
-    左轉()
-    左轉()
-    robotbit.GeekServo(robotbit.Servos.S1, 0)
-}
 function 出發 () {
     basic.showNumber(3)
     basic.pause(1000)
@@ -67,7 +42,7 @@ function 右轉 () {
 }
 input.onButtonPressed(Button.A, function () {
     if (功能編號 == 1) {
-        功能編號 = 4
+        功能編號 = 6
         basic.showNumber(功能編號)
     } else if (功能編號 == 99) {
         list.push(3)
@@ -104,15 +79,21 @@ function 開機打招呼 () {
     robotbit.GeekServo(robotbit.Servos.S1, 0)
     music.playMelody("D G C5 - C5 B A A ", 1000)
 }
+function 等長虛線 () {
+    for (let index = 0; index < 4; index++) {
+        servos.P0.run(50)
+        命令移動模式()
+    }
+}
 input.onButtonPressed(Button.AB, function () {
     if (功能編號 == 1) {
         命令移動模式()
     } else if (功能編號 == 2) {
-        舞蹈動作2()
+        等長虛線()
     } else if (功能編號 == 3) {
-        舞蹈動作1()
+        直線()
     } else if (功能編號 == 4) {
-        追隨手掌()
+        摩斯密碼()
     } else if (功能編號 == 99) {
         list.push(1)
         basic.showArrow(ArrowNames.North)
@@ -136,57 +117,9 @@ input.onButtonPressed(Button.B, function () {
         basic.showNumber(功能編號)
     }
 })
-function 追隨手掌 () {
-    basic.showIcon(IconNames.Surprised)
-    while (sonar.ping(
-    DigitalPin.P14,
-    DigitalPin.P15,
-    PingUnit.Centimeters
-    ) > 10) {
-        basic.showIcon(IconNames.Surprised)
-        basic.pause(100)
-        basic.showIcon(IconNames.Asleep)
-        basic.pause(100)
-    }
-    basic.showIcon(IconNames.Ghost)
-    while (true) {
-        if (sonar.ping(
-        DigitalPin.P14,
-        DigitalPin.P15,
-        PingUnit.Centimeters
-        ) <= 5) {
-            robotbit.MotorRunDual(
-            robotbit.Motors.M1A,
-            -150,
-            robotbit.Motors.M1B,
-            -150
-            )
-        } else if (sonar.ping(
-        DigitalPin.P14,
-        DigitalPin.P15,
-        PingUnit.Centimeters
-        ) < 8) {
-            robotbit.MotorStopAll()
-        } else if (sonar.ping(
-        DigitalPin.P14,
-        DigitalPin.P15,
-        PingUnit.Centimeters
-        ) >= 15) {
-            robotbit.MotorRunDual(
-            robotbit.Motors.M1A,
-            150,
-            robotbit.Motors.M1B,
-            150
-            )
-        }
-    }
-    robotbit.MotorRunDual(
-    robotbit.Motors.M1A,
-    0,
-    robotbit.Motors.M1B,
-    0
-    )
-    basic.showIcon(IconNames.Heart)
+function 直線 () {
+    servos.P0.setAngle(90)
+    命令移動模式()
 }
 function 任意前進或後退 (速度: number, 時間: number) {
     robotbit.MotorRunDual(
@@ -198,22 +131,20 @@ function 任意前進或後退 (速度: number, 時間: number) {
     basic.pause(時間)
     robotbit.MotorStopAll()
 }
+function 摩斯密碼 () {
+    for (let index = 0; index < 4; index++) {
+        servos.P0.setRange(0, 90)
+        命令移動模式()
+        servos.P0.stop()
+        servos.P0.run(50)
+        命令移動模式()
+    }
+}
 function 命令移動模式 () {
     功能編號 = 99
     list = []
     basic.showIcon(IconNames.Happy)
     music.playMelody("C D F A E F A C5 ", 800)
-}
-function 舞蹈動作1 () {
-    for (let index = 0; index < 2; index++) {
-        basic.showIcon(IconNames.Happy)
-        robotbit.GeekServo(robotbit.Servos.S1, 100)
-        任意前進或後退(200, 500)
-        basic.showIcon(IconNames.Asleep)
-        robotbit.GeekServo(robotbit.Servos.S1, 0)
-        任意前進或後退(-200, 500)
-    }
-    music.playMelody("D G C5 - C5 B A A ", 1000)
 }
 let list: number[] = []
 let 暫存 = 0
@@ -221,3 +152,6 @@ let 功能編號 = 0
 開機打招呼()
 功能編號 = 1
 basic.showNumber(功能編號)
+loops.everyInterval(randint(0, 100), function () {
+	
+})
